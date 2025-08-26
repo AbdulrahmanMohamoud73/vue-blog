@@ -2,17 +2,14 @@
 </script>
 <template>
     <div class="header">
-        <h1 @click="$router.push('/')">AR1's Journal</h1>
+        <h1 @click="$router.push('/')">Javascript Blog</h1>
         <p>Discussing everything Javascript</p>
     </div>
 </template>
 <style scoped>
-.header {
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 20px 0;
+.header{
+  text-align: center;
+  margin: 10px auto;
+  cursor: pointer;
 }
 </style>
