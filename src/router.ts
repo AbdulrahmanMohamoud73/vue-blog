@@ -9,9 +9,14 @@ const router = createRouter({
             component: () => import('./components/Home.vue')
         },
         {
-            path: '/Newpost/:id',
-            name: 'Newpost',
-            component: () => import('./components/Newpost.vue')
+            path: '/Post/:id',
+            name: 'Post',
+            component: () => import('./components/Post.vue')
+        },
+        {
+            path: '/Editor/:id',
+            name: 'Editor',
+            component: () => import('./components/Editor.vue')
         }
     ]
 })

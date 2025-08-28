@@ -7,7 +7,7 @@ fetchPosts();
 
 <template>
     <div class="wrapper" v-if="postsLoaded">
-        <div class="articleDiv" v-for="(post, id) in allPosts" :key="id" @click="$router.push({ name: 'Newpost', params: { id: post.id } })">
+        <div class="articleDiv" v-for="(post, id) in allPosts" :key="id" @click="$router.push({ name: 'Post', params: { id: post.id } })">
           <div class="title">
             <h2>{{ post.title }}</h2>
         </div> 
