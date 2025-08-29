@@ -1,10 +1,10 @@
 @font-face {
     font-family: 'Apercu';
-    src: url('src/assets/Apercu-Light.eot');
-    src: url('src/assets/Apercu-Light.eot?#iefix') format('embedded-opentype'),
-        url('src/assets/Apercu-Light.woff2') format('woff2'),
-        url('src/assets/Apercu-Light.woff') format('woff'),
-        url('src/assets/Apercu-Light.ttf') format('truetype');
+    src: url('/assets/Apercu-Light.eot');
+    src: url('/assets/Apercu-Light.eot?#iefix') format('embedded-opentype'),
+        url('/assets/Apercu-Light.woff2') format('woff2'),
+        url('/assets/Apercu-Light.woff') format('woff'),
+        url('/assets/Apercu-Light.ttf') format('truetype');
     font-weight: 300;
     font-style: normal;
     font-display: swap;
@@ -12,11 +12,11 @@
 
 @font-face {
     font-family: 'Apercu';
-    src: url('src/assets/Apercu-Bold.eot');
-    src: url('src/assets/Apercu-Bold.eot?#iefix') format('embedded-opentype'),
-        url('src/assets/Apercu-Bold.woff2') format('woff2'),
-        url('src/assets/Apercu-Bold.woff') format('woff'),
-        url('src/assets/Apercu-Bold.ttf') format('truetype');
+    src: url('/assets/Apercu-Bold.eot');
+    src: url('/assets/Apercu-Bold.eot?#iefix') format('embedded-opentype'),
+        url('/assets/Apercu-Bold.woff2') format('woff2'),
+        url('/assets/Apercu-Bold.woff') format('woff'),
+        url('/assets/Apercu-Bold.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
     font-display: swap;
@@ -24,11 +24,11 @@
 
 @font-face {
     font-family: 'Apercu';
-    src: url('src/assets/Apercu-Regular.eot');
-    src: url('src/assets/Apercu-Regular.eot?#iefix') format('embedded-opentype'),
-        url('src/assets/Apercu-Regular.woff2') format('woff2'),
-        url('src/assets/Apercu-Regular.woff') format('woff'),
-        url('src/assets/Apercu-Regular.ttf') format('truetype');
+    src: url('assets/Apercu-Regular.eot');
+    src: url('/assets/Apercu-Regular.eot?#iefix') format('embedded-opentype'),
+        url('/assets/Apercu-Regular.woff2') format('woff2'),
+        url('/assets/Apercu-Regular.woff') format('woff'),
+        url('assets/Apercu-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -52,6 +52,7 @@
     box-sizing: border-box;
     text-align: center;
 }
+
 .header {
     margin: 0;
     padding: 0;

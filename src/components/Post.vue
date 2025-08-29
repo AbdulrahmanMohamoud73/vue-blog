@@ -23,7 +23,7 @@ watchEffect(() => {
     <p>{{ new Date(post.published_at).toLocaleDateString('en-GB', {
               day: 'numeric', month: 'short', year: 'numeric'
             })}}</p>
-    <p>{{ post.text_content }}</p>
+    <div v-html="post.text_content"></div>
   </div>
   <div v-else>
     <p>Loading...</p>
