@@ -92,6 +92,7 @@ h2 {
 .edit{
   cursor: pointer;
   margin: 10px;
+  text-decoration: underline;
   /* color: #0d82e9; */
   color: black;
 }

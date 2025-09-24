@@ -2,8 +2,8 @@
 </script>
 <template>
     <div class="header">
-        <h1 @click="$router.push('/')">Javascript Blog</h1>
-        <p>Discussing everything Javascript</p>
+        <h1 @click="$router.push('/')">My Blog</h1>
+        <p>Discussing everything</p>
     </div>
 </template>
 <style scoped>

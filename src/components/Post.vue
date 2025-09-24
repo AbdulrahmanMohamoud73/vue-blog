@@ -18,11 +18,12 @@ watchEffect(() => {
 
 <template>
   <div class="wrapper" v-if="post">
-    <h2>{{ post.title }}</h2>
+    <p class="back" @click="$router.push('/')">Back</p>
+    <!-- <h2>{{ post.title }}</h2>
     <h4>{{ post.description }}</h4>
     <p>{{ new Date(post.published_at).toLocaleDateString('en-GB', {
               day: 'numeric', month: 'short', year: 'numeric'
-            })}}</p>
+            })}}</p> -->
     <div v-html="post.text_content"></div>
   </div>
   <div v-else>
@@ -30,4 +31,12 @@ watchEffect(() => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.back {
+  cursor: pointer;
+  text-decoration: underline;
+  width: fit-content;
+  position: relative;
+  margin: 10px;
+}
+</style>

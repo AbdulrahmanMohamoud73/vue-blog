@@ -63,10 +63,24 @@ html, body, #app {
     width: 100%;
 }
 
+button {
+  background-color: white;
+  border: 1px solid #bebdbd;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+label {
+    text-align: left;
+    padding: 2px;
+}
+
 .articleDiv {
     cursor: pointer;
 }
 
 .wrapper {
-    margin: 70px;
+    margin: 40px;
 }

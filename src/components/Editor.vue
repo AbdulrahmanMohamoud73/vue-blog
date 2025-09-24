@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useEditor, EditorContent } from '@tiptap/vue-3';
+import { useEditor, EditorContent, Editor } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 import Highlight from '@tiptap/extension-highlight';
 import TextAlign from '@tiptap/extension-text-align';
 import { useRoute } from 'vue-router';
 import { fetchPosts, allPosts, Post } from '../composables/posts';
-import { onMounted, ref } from 'vue';
+import { onMounted, Ref, ref, watch } from 'vue';
 import supabase from '../supabase';
 
 const route = useRoute();
@@ -20,7 +20,9 @@ async function savePost() {
   let { error } = await supabase
     .from('blog_data')
     .update({
-      text_content: editor.value.getHTML(),
+      title: post.value?.title,
+      description: post.value?.description,
+      text_content: preserveEmptyParagraphs(editor.value.getHTML()),
       published_at: new Date()
     })
     .eq('id', postId);
@@ -35,15 +37,33 @@ async function savePost() {
   }
 }
 
+function preserveEmptyParagraphs(html: string) {
+  return html.replace(/<p>(?:\s|&nbsp;|<br\s*\/?>)*<\/p>/g, '<p><br></p>');
+}
+
 onMounted(async () => {
   await fetchPosts();
   post.value = allPosts.value.find(p => String(p.id) === String(postId)) || null;
-  if (post.value && editor) {
-    editor.value.commands.setContent(post.value.text_content);
+  if (post.value && editor.value) {
+  const preservedHtml = preserveEmptyParagraphs(post.value.text_content);
+  editor.value.commands.setContent(preservedHtml);
+}
+
+  editor.value?.on('update', ({ editor }) => {
+  const firstHeading = editor.state.doc.content.firstChild;
+  
+  if (
+    firstHeading?.type.name === 'heading' &&
+    firstHeading?.attrs.level === 1 &&
+    post.value
+  ) {
+    post.value.title = firstHeading.textContent;
   }
 });
 
-const editor = useEditor({
+});
+
+const editor: Ref<Editor | null> = useEditor({
   extensions: [
     StarterKit,
     Highlight,
@@ -51,12 +71,33 @@ const editor = useEditor({
       types: ['heading', 'paragraph'],
     }),
   ],
-  content: '',
+  content:'',
 });
+
+watch(() => post.value?.title, (newTitle) => {
+  if (!editor.value) return;
+
+  const html = editor.value.getHTML();
+  const updatedHtml = html.replace(/^<h1>.*?<\/h1>/, `<h1>${newTitle}</h1>`); // non-greedy
+  editor.value.commands.setContent(updatedHtml);
+});
+
 
 </script>
 
 <template>
+  <div class="titleandDescriptionWrapper" v-if="post">
+    <div class="titleWrapper">
+      <label for="title">Title</label>
+      <input id="title"  type="text" v-model="post.title"
+        style="width: 300px; margin: 5px 0; display: block; padding: 10px 2px; font-size: 1em; border: 1px solid #bebdbd; border-radius: 5px; background-color: whitesmoke;" />
+    </div>
+    <div class="descriptionWrapper">
+      <label for="description">Description</label>
+        <input id="description" type="text" v-model="post.description"
+        style="width: 300px; margin: 5px 0; display: block; padding: 10px; font-size: 1em; border: 1px solid #bebdbd; border-radius: 5px; background-color: whitesmoke;" />
+    </div>
+  </div>
   <div v-if="editor && post" class="container">
     <div class="control-group">
       <div class="button-group">
@@ -103,10 +144,6 @@ const editor = useEditor({
           :class="{ 'is-active': editor.isActive({ textAlign: 'right' }) }">
           Right
         </button>
-        <button @click="editor.chain().focus().setTextAlign('justify').run()"
-          :class="{ 'is-active': editor.isActive({ textAlign: 'justify' }) }">
-          Justify
-        </button>
       </div>
     </div>
     <EditorContent class="editor" :editor="editor" />
@@ -138,15 +175,11 @@ const editor = useEditor({
   border-radius: 5px;
 }
 
-button {
-  background-color: white;
-  border: 1px solid #bebdbd;
-  border-radius: 5px;
-  padding: 5px 10px;
-  margin-right: 5px;
-  cursor: pointer;
+.titleWrapper, .descriptionWrapper {
+  display: flex;
+  flex-direction: column;
+  margin: 0 5px;
 }
-
 .button-group {
   display: flex;
   flex-direction: row;
@@ -174,7 +207,16 @@ button {
   margin: 0 auto;
 }
 
-.save-date{
+.titleandDescriptionWrapper {
+  width: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.save-date {
   font-size: 0.9em;
   color: #616161;
   margin-left: 10px;
