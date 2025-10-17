@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
+    "build:copy": "npm run build && cp -r dist/* /backend/src/main/resources/static/",
     "preview": "vite preview"
   },
   "dependencies": {
