@@ -4,9 +4,12 @@ import StarterKit from '@tiptap/starter-kit';
 import Highlight from '@tiptap/extension-highlight';
 import TextAlign from '@tiptap/extension-text-align';
 import { useRoute } from 'vue-router';
-import { fetchPosts, allPosts, Post } from '../composables/posts';
+import { usePosts, Post } from '../composables/posts';
 import { onMounted, Ref, ref, watch } from 'vue';
-import supabase from '../supabase';
+import * as dayjs from "dayjs";
+
+
+const { fetchPost, updatePost } = usePosts();
 
 const route = useRoute();
 const postId = route.params.id;
@@ -17,23 +20,25 @@ async function savePost() {
 
   const now = new Date().toISOString();
 
-  let { error } = await supabase
-    .from('blog_data')
-    .update({
-      title: post.value?.title,
-      description: post.value?.description,
-      text_content: preserveEmptyParagraphs(editor.value.getHTML()),
-      published_at: new Date()
-    })
-    .eq('id', postId);
+  if (!post.value) return;
 
-  if (error) {
+  try {
+    const updatedPost = {
+      id: Number(postId),
+      title: post.value.title,
+      description: post.value.description,
+      content: preserveEmptyParagraphs(editor.value.getHTML()),
+      publishedAt: now
+    };
+
+    const response = await updatePost(Number(postId), updatedPost);
+
+    if (response) alert('Post saved successfully!');
+
+  } catch (error: any) {
+    
     console.error('Error updating post:', error);
-  } else {
-    if (post.value) {
-      post.value.published_at = now;
-    }
-    alert('Post saved successfully!');
+    alert('Failed to save post');
   }
 }
 
@@ -42,24 +47,16 @@ function preserveEmptyParagraphs(html: string) {
 }
 
 onMounted(async () => {
-  await fetchPosts();
-  post.value = allPosts.value.find(p => String(p.id) === String(postId)) || null;
-  if (post.value && editor.value) {
-  const preservedHtml = preserveEmptyParagraphs(post.value.text_content);
-  editor.value.commands.setContent(preservedHtml);
-}
+  try{
+    post.value = await fetchPost(Number(postId));
 
-  editor.value?.on('update', ({ editor }) => {
-  const firstHeading = editor.state.doc.content.firstChild;
-  
-  if (
-    firstHeading?.type.name === 'heading' &&
-    firstHeading?.attrs.level === 1 &&
-    post.value
-  ) {
-    post.value.title = firstHeading.textContent;
+    if (post.value && editor.value) {
+      const preservedHtml = preserveEmptyParagraphs(post.value.content);
+      editor.value.commands.setContent(preservedHtml);
+    }
+  } catch (error) {
+    console.error('Error fetching post:', error);
   }
-});
 
 });
 
@@ -148,19 +145,16 @@ watch(() => post.value?.title, (newTitle) => {
     </div>
     <EditorContent class="editor" :editor="editor" />
     <div class="save-button-date-wrapper">
-      <div class="save-date">last saved at: {{ new Date(post.published_at).toLocaleTimeString('en-GB', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }) }}
+      <div class="save-date">last saved at: {{ dayjs(post.publishedAt).format("D MMMM YYYY, H:mm") }}
       </div>
       <button class="save-button" @click="savePost">Save Post</button>
     </div>
   </div>
-  <div v-else>
-    <p>Error: Post with id {{ postId }} not found</p>
+  <div v-else class="errorContainer">
+    <div class="errorMessage">
+      <h1>Not Found !</h1>
+      <h2>We could not find what you were looking for</h2>
+    </div>
   </div>
 </template>
 
@@ -222,11 +216,6 @@ watch(() => post.value?.title, (newTitle) => {
   margin-left: 10px;
 }
 
-.ProseMirror {
-  min-height: 350px;
-  cursor: text;
-}
-
 .is-active {
   background-color: #000;
   color: #fff;
@@ -239,7 +228,21 @@ watch(() => post.value?.title, (newTitle) => {
   margin: 15px 0;
 }
 
-.ProseMirror:focus {
-  outline: none;
+
+.errorContainer{
+  display: flex;
+  justify-content: center;
+  height: 80%;
+  width: 100%;
+  max-width: 450px;
+}
+
+.errorMessage{
+  border: 2px solid black;
+  border-radius: 4px;
+  height: 20%;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
 }
 </style>
