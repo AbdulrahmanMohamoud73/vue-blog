@@ -1,4 +1,4 @@
-package com.example.demo.models;
+package com.blog.vue.models;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;

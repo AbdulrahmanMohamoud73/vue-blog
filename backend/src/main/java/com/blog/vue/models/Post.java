@@ -1,18 +1,15 @@
-package com.example.demo.models;
+package com.blog.vue.models;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
-@Table(name = "blog_data")
+@Table(name = "posts")
 public class Post {
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -22,6 +19,7 @@ public class Post {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private LocalDateTime publishedAt;
 
