@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
-import { fetchPosts, allPosts, Post } from "../composables/posts";
+import { usePosts, Post } from "../composables/posts";
 
+const { allPosts, fetchPosts } = usePosts();
 const route = useRoute();
 const postId = ref(route.params.id);
 const post = ref<Post | null>(null);
@@ -14,20 +15,21 @@ onMounted(async () => {
 watchEffect(() => {
   post.value = allPosts.value.map((p) => p).find((p) => String(p.id) === String(postId.value));
 });
+
 </script>
 
 <template>
   <div class="wrapper" v-if="post">
     <p class="back" @click="$router.push('/')">Back</p>
-    <!-- <h2>{{ post.title }}</h2>
-    <h4>{{ post.description }}</h4>
-    <p>{{ new Date(post.published_at).toLocaleDateString('en-GB', {
-              day: 'numeric', month: 'short', year: 'numeric'
-            })}}</p> -->
-    <div v-html="post.text_content"></div>
+    <div id="title">{{post.title}}</div>
+    <div id="description">{{post.description}}</div>
+    <div v-html="post.content"></div>
   </div>
-  <div v-else>
-    <p>Loading...</p>
+  <div v-else class="errorContainer">
+    <div class="errorMessage">
+      <h1>Not Found !</h1>
+      <h2>We could not find what you were looking for</h2>
+    </div>
   </div>
 </template>
 
